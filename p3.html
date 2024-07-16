@@ -1,0 +1,76 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Document</title>
+    <script src="p3.js"></script>
+    <link rel="stylesheet" href="p3.css">
+</head>
+<body>
+ <center>
+     <h1>Starbucks drinks</h1>
+      <h2>calories</h2>
+ </center>
+    <div >
+        <canvas id="myChart"> </canvas>
+    </div>
+  <script>
+    chartIt()
+
+async function fetchDemo(){
+    const response = await fetch("2_starbucks_drink.csv");
+    const data = await response.text();
+    console.log(data)
+    let drinkNames = []
+    let calories = []
+        
+    const table = data.trim().split('\n').slice(1);
+    table.forEach(row => {
+        const columns = row.split(',');
+        const drinkName = columns[1];
+        console.log(drinkName)
+        drinkNames.push(drinkName);
+        const calorie = columns[4];
+        console.log(calorie)
+        calories.push(calorie);
+
+        });
+    return { drinkNames, calories };
+
+}
+
+async function chartIt(){
+    const data = await fetchDemo();
+    const ctx = document.getElementById('myChart');
+    ctx.height = 50;
+    const myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: data.drinkNames,
+        datasets: [{
+        label: 'calories',
+        data: data.calories,
+        backgroundColor: 'rgb(58, 101, 55)',
+        borderColor: 'rgb(39, 68, 37)',
+        borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+        y: {
+            beginAtZero: true,
+        }
+        }
+    }
+    });
+}
+
+
+
+fetchDemo()
+  </script>
+</body>
+</html>
